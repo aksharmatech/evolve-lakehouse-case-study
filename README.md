@@ -83,7 +83,7 @@ You do **not** need to deploy real infrastructure. Focus on architecture, data m
 
 ---
 
-## Tasks (Option A – Medium Difficulty)
+## Tasks
 
 ### 1. Architecture Design (`docs/architecture.md`)
 
@@ -190,8 +190,7 @@ Please submit:
 
 You can return your work as:
 
-- A private GitHub repository, or  
-- A zipped version of this repository  
+- A private GitHub repository
 
 Be prepared to walk through your work during the interview.
 
