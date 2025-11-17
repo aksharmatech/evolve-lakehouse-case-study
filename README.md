@@ -65,9 +65,6 @@ evolve-lakehouse-case-study/
     └── README.md
 ```
 
-> This template includes folder structure and placeholder CSV files.  
-> In a real run, we will provide populated CSVs in `data/raw/`.
-
 ---
 
 ## Challenge Overview
