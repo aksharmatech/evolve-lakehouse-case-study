@@ -1,5 +1,9 @@
 
-# Evolve Lakehouse Data Engineering Case Study
+<h1 align="center">Evolve Lakehouse Data Engineering Case Study</h1>
+
+<p align="center">
+  <img src="evolve-banner.png" alt="Evolve" width="600"/>
+</p>
 
 A take-home data engineering project simulating how Evolve designs analytical lakehouse pipelines using Iceberg, dbt, and Snowflake.
 
