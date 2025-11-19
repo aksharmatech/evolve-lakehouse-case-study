@@ -181,6 +181,29 @@ CREATE ICEBERG TABLE fct_property_day
 SELECT * FROM fct_property_day LIMIT 10;
 ```
 
+
+### How to query the data for various KPIs
+
+The following query is just and explanation on how to query the facts and dimensions to get guest_occupancy / owner_occupancy and occupancy_percentage for a specific date / month / year / listing etc. 
+
+```sql
+select 
+    cd.year, 
+    cd.month_of_year,
+    sum(case when is_occupied then 1 else 0 end) as guest_occupancy,
+    sum(case when owner_blocked then 1 else 0 end) as owner_occupancy,
+    count(*) as total_nights,
+    sum(revenue_per_day) as total_revenue,
+    guest_occupancy / (total_nights - owner_occupancy) as occupancy_percentage
+    --pd.*, cd.month_of_year, cd.year 
+from mart.bookings.fct_property_day pd
+left join mart.bookings.dim_calendar_date cd 
+on pd.date_key = cd.date_key
+where pd.listing_id = 4 and cd.year = 2023
+group by all
+order by month_of_year;
+```
+
 ##### Zero-Copy Query Architecture
 
 Snowflake queries Iceberg tables directly from S3 without copying data by reading metadata from the AWS Glue Catalog to identify relevant Parquet files. It then uses its compute clusters to scan only the necessary files from S3 and process results in-memory. This eliminates data duplication, reduces storage costs, and avoids ETL loading operations while maintaining query performance through Iceberg's metadata pruning and predicate pushdown capabilities.
@@ -221,3 +244,6 @@ Snowflake queries Iceberg tables directly from S3 without copying data by readin
 - MWAA built-in monitoring
 - DBT Cloud or elementary for DBT observability
 - Snowflake query history and account usage views
+
+
+
