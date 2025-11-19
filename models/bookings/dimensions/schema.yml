@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_listing_scd2
+    description: "Listing dimension table with SCD Type 2 implementation - tracks historical changes to listings"
+    columns:
+      - name: listing_key
+        description: "Surrogate key (hash of listing_id + activation date)"
+        tests:
+          - not_null
+          - unique
+
+      - name: listing_id
+        description: "Natural key for the listing"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_listings')
+              field: listing_id
+
+      - name: effective_date_from
+        description: "Start date of validity period (YYYYMMDD format)"
+        tests:
+          - not_null
+
+      - name: effective_date_to
+        description: "End date of validity period (99991231 if still active)"
+        tests:
+          - not_null
+
+      - name: is_active
+        description: "Flag indicating if this is the current/active record"
+        tests:
+          - not_null
+
+      - name: listing_price
+        description: "Price per night for the listing"
+        tests:
+          - not_null
+
+  - name: dim_calendar_date
+    description: "Calendar date dimension table with comprehensive date attributes"
+    columns:
+      - name: date_key
+        description: "Surrogate key in YYYYMMDD format"
+        tests:
+          - not_null
+          - unique
+
+      - name: calendar_date
+        description: "Actual calendar date"
+        tests:
+          - not_null
+          - unique
+
+      - name: day_of_week
+        description: "Day of week (0=Sunday to 6=Saturday)"
+        tests:
+          - not_null
+
+      - name: day_name
+        description: "Full name of day"
+        tests:
+          - not_null
+
+      - name: day_of_month
+        description: "Day number in month (1-31)"
+        tests:
+          - not_null
+
+      - name: day_of_year
+        description: "Day number in year (1-365/366)"
+        tests:
+          - not_null
+
+      - name: is_weekend
+        description: "Flag for weekend days"
+        tests:
+          - not_null
+
+      - name: week_of_year
+        description: "Week number in year (1-52/53)"
+        tests:
+          - not_null
+
+      - name: year_of_week
+        description: "Year associated with the week"
+        tests:
+          - not_null
+
+      - name: month_of_year
+        description: "Month number (1-12)"
+        tests:
+          - not_null
+
+      - name: month_name
+        description: "Full name of month"
+        tests:
+          - not_null
+
+      - name: quarter_of_year
+        description: "Quarter number (1-4)"
+        tests:
+          - not_null
+
+      - name: quarter_name
+        description: "Quarter label (e.g., 'Q1')"
+        tests:
+          - not_null
+
+      - name: year
+        description: "Calendar year"
+        tests:
+          - not_null

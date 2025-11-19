@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: fct_property_day
+    description: "Property Day Fact Table - provides daily-level metrics for each property listing"
+    columns:
+      - name: listing_id
+        description: "Foreign key to listing dimension"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_listing_scd2')
+              field: listing_id
+
+      - name: date_key
+        description: "Foreign key to calendar dimension"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_calendar_date')
+              field: date_key
+
+      - name: is_active
+        description: "Flag indicating if listing is currently active"
+        tests:
+          - not_null
+
+      - name: is_occupied
+        description: "Flag: True if booked by a guest"
+        tests:
+          - not_null
+
+      - name: owner_blocked
+        description: "Flag: True if blocked by owner"
+        tests:
+          - not_null
+
+      - name: is_available
+        description: "Flag: True if available for booking"
+        tests:
+          - not_null
+
+      - name: revenue_per_day
+        description: "Daily revenue (price if occupied, 0 otherwise)"
+        tests:
+          - not_null
+
+    tests:
+      # Test that a day cannot be both occupied and owner_blocked
+      - dbt_utils.expression_is_true:
+          expression: "not (is_occupied and owner_blocked)"
+          config:
+            severity: error
+
+      # Test that availability is mutually exclusive with occupied and owner_blocked
+      - dbt_utils.expression_is_true:
+          expression: "is_available = (not is_occupied and not owner_blocked)"
+          config:
+            severity: error
+
+      # Test that revenue is only generated when occupied
+      - dbt_utils.expression_is_true:
+          expression: "case when is_occupied then revenue_per_day > 0 else revenue_per_day = 0 end"
+          config:
+            severity: warn

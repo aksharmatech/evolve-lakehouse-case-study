@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: stg_listings
+    description: "Staging model for listings data - cleans and standardizes raw listing data"
+    columns:
+      - name: listing_id
+        description: "Unique identifier for the listing"
+        tests:
+          - not_null
+          - unique
+
+      - name: listing_activation_date
+        description: "Date when listing became active"
+        tests:
+          - not_null
+
+      - name: listing_resign_date
+        description: "Date when listing was deactivated (null if still active)"
+
+  - name: stg_bookings
+    description: "Staging model for bookings data - cleans and standardizes raw booking data"
+    columns:
+      - name: booking_id
+        description: "Unique identifier for the booking"
+        tests:
+          - not_null
+          - unique
+
+      - name: listing_id
+        description: "Foreign key to listing"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_listings')
+              field: listing_id
+
+      - name: created_date
+        description: "Date when booking was created"
+        tests:
+          - not_null
+
+      - name: checkin_date
+        description: "Start date of the booking"
+        tests:
+          - not_null
+
+      - name: checkout_date
+        description: "End date of the booking"
+        tests:
+          - not_null
+
+      - name: cancelled
+        description: "Flag indicating if booking was cancelled (0=active, 1=cancelled)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+
+      - name: type
+        description: "Type of booking (e.g., 'guest', 'owner')"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['guest', 'owner']
